@@ -3,7 +3,7 @@ import sequelize from './db';
 dotenv.config()
 
 // Create the connection to database
-const InitDB = async () => {
+const InitDB = () => {
   sequelize.authenticate().then(() => {
     console.log("Success!");
   }).catch((err: any) => {
