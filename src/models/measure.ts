@@ -55,10 +55,10 @@ class Measure extends Model {
   declare image_url: string;
 
   
-  @ForeignKey(() => Customer)
-    @Column({
-        type: DataType.UUID,
-      })
+  // @ForeignKey(() => Customer)
+  //   @Column({
+  //       type: DataType.UUID,
+  //     })
       declare customer_code: string;
 
 }
