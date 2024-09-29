@@ -2,9 +2,9 @@ import dotenv from 'dotenv'
 import { Sequelize } from 'sequelize-typescript';
 
 dotenv.config()
-const sequelize = new Sequelize("measure-database", "root", "root", {
+const sequelize = new Sequelize("postgres", "postgres", "admin", {
   host: "db",
-  dialect: "mysql",
+  dialect: "postgres",
   pool: {
     max: 9,
     min: 0,
