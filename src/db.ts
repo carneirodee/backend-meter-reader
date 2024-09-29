@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 const __dirname1= path.resolve();
 dotenv.config({ path: `${__dirname1}/src/.env` });
 const sequelize = new Sequelize("postgres", "postgres", "admin", {
-  host: process.env.LOCALHOST,
+  host: process.env.DB_HOST,
   dialect: "postgres",
   pool: {
     max: 9,
