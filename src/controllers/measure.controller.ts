@@ -2,7 +2,6 @@ import MeasureRepository from "../repositories/measure.repository";
 import { validateConfirmValue, validateMeasureType, validateReadingMeter } from "../validators/validations";
 import { analyzeImage } from '../services/gemini.service';
 import { uploadImage } from '../services/upload.service';
-import Measure from "../models/measure";
 export default class MeasureConntroller {
   constructor() {
   }
