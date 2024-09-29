@@ -1,9 +1,8 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { SALT_KEY } from '../config'
+dotenv.config({ path:'../.env' })
 
-dotenv.config();
-
+const SALT_KEY = process.env.SALT_KEY
 
 export const generateToken = async (data: string | object | Buffer) => {
     return jwt.sign(data, SALT_KEY as string, { expiresIn: '1d' });

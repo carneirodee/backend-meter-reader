@@ -11,7 +11,7 @@ const server = http.createServer(app);
 server.listen(port);
 server.on('error', errorTreatment);
 server.on('listening', runningException);
-console.log('Running on port' + port);
+console.log('Running on port ' + port);
 
 
 

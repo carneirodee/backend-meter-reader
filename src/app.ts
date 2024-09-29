@@ -7,22 +7,26 @@ import addressRouter from './routes/customer-address.routes';
 import measureRouter from './routes/measure.routes';
 dotenv.config()
 
-const __dirname = path.resolve();
+const __dirname1 = path.resolve();
 
 const app = express();
 
 app.use(express.json());
 
-app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+app.use('/uploads', express.static(path.join(__dirname1, '/uploads')));
 app.use('/customer', customerRouter);
 app.use('/address', addressRouter);
 app.use('/', measureRouter)
 
-try {
-    InitDB()
-} catch (e) {
-    console.log(e)
+async function Initialization(): Promise<void> {
+    try {
+        await InitDB()
+    } catch (e) {
+        console.log(e)
+    }
 }
+
+Initialization();
 
 app.get("/", (request: any, response: any) => {
     response.status(200).send({ message: "success" });

@@ -51,18 +51,18 @@ class Customer extends Model<Customer> {
   declare password: string;
 
   @Column({
-    type: DataType.BLOB,
+    type: DataType.STRING,
   })
   declare profile_picture: string;
 
   @Column({
-    type: DataType.BLOB,
+    type: DataType.STRING,
   })
   declare access_token: string;
 
   @AllowNull(false)
   @Column({
-    type: DataType.BLOB,
+    type: DataType.STRING,
   })
   declare is_active: string;
 

@@ -4,7 +4,7 @@
   "main": "./src/server.ts",
   "scripts": {
     "build": "tsc",
-    "test": "npx jest",
+    "test": "node --experimental-vm-modules  node_modules/jest/bin/jest.js",
     "start": "npm run build && node --experimental-specifier-resolution=node --loader ts-node/esm ./build/src/server.js",
     "dev": "nodemon"
   },
@@ -14,10 +14,13 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@google/generative-ai": "^0.20.0",
     "debug": "^4.3.7",
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
     "http": "^0.0.1-security",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.11.3",
     "pg": "^8.13.0",
     "sequelize-typescript": "^2.1.6"
