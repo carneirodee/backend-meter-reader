@@ -10,5 +10,5 @@ export default {
     "^.+\\.(js|jsx)$": "babel-jest"
   },
   transformIgnorePatterns: [],
-  preset: 'ts-jest/presets/js-with-ts',
+  preset: 'ts-jest',
 };
