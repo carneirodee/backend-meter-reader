@@ -17,6 +17,7 @@
     "express": "^4.21.0",
     "http": "^0.0.1-security",
     "mysql2": "^3.11.3",
+    "pg": "^8.13.0",
     "sequelize-typescript": "^2.1.6"
   },
   "devDependencies": {

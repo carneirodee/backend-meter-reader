@@ -18,7 +18,7 @@ try {
 }
 
 app.get("/", (request: any, response: any) => {
-    response.sendStatus(200);
+    response.status(200).send({message: "success"});
 });
 
 export default app;
