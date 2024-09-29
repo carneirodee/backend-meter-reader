@@ -11,7 +11,7 @@ const server = http.createServer(app);
 server.listen(port);
 server.on('error', errorTreatment);
 server.on('listening', runningException);
-console.log('API rodando na porta ' + port);
+console.log('Running on port' + port);
 
 
 
