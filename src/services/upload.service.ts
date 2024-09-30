@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path';
 import dotenv from 'dotenv';
 const __dirname1 = path.resolve();
+
 dotenv.config({ path: `${__dirname1}/src/envoriment.env` });
 
 export const uploadImage = (id: String, imagesBase64: string) => {
