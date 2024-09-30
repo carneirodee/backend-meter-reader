@@ -119,7 +119,7 @@ export default class MeasureConntroller {
 
       const measure_value = parseInt(await analyzeImage(image))
       console.log('Value', measure_value)
-      const uploadResult = uploadImage(image);
+      const uploadResult = uploadImage(customer_code, image);
       if (!uploadResult) {
         return res.status(400).send({
           error_code: 'INVALID_DATA',
@@ -156,8 +156,8 @@ export default class MeasureConntroller {
       const data = await this.repository.update(id, req.body);
       if (data[0] === 0) {
         res.status(404).send({
-          error_code: 'CUSTOMER ADDRESS NOT FOUND',
-          error_description: 'Customer Address not found'
+          error_code: 'MEASURE NOT FOUND',
+          error_description: 'Measure not found'
         })
         return
       }
@@ -211,8 +211,8 @@ export default class MeasureConntroller {
       const data = await this.repository.getById(id);
       if (data == null) {
         res.status(404).send({
-          error_code: 'CUSTOMER ADDRESS NOT FOUND',
-          error_description: 'Customer Address not found'
+          error_code: 'MEASURE NOT FOUND',
+          error_description: 'Measure not found'
         })
         return
       }

@@ -2,10 +2,11 @@ import CustomerAddressRepository from "../repositories/customer-address.reposito
 import CustomerRepository from "../repositories/customer.repository";
 import { generateToken } from "../services/auth.service";
 import { validateCode } from "../validators/validations";
+import { uploadImage, uploadProfilePicture } from '../services/upload.service';
 import { v4 as uuidv4 } from 'uuid';
 import md5 from 'md5';
 import dotenv from 'dotenv';
-dotenv.config({ path:'../envoriment.env' })
+dotenv.config({ path: '../envoriment.env' })
 
 const SALT_KEY = process.env.SALT_KEY
 export default class CustomerConntroller {
@@ -70,6 +71,11 @@ export default class CustomerConntroller {
             req.body.customer_code = uuidv4();
             req.body.is_active = 1;
             req.body.password = md5(req.body.senha + SALT_KEY)
+            const url = uploadProfilePicture(req.body.customer_code, req.body.profile_picture);
+            if (url) {
+                req.body.profile_picture = url;
+            }
+
             if (validateCode(req.body.code)) {
                 const data = await this.repository.create(req.body);
                 const address = {
@@ -167,13 +173,14 @@ export default class CustomerConntroller {
                 token: token,
                 data: {
                     email: data.email,
-                    nome: data.name
+                    nome: data.name,
+                    profile_picture: data.profile_picture
                 },
                 message: 'Autenticação feita com sucesso'
             })
         } catch (erro) {
             res.status(500).send({
-                message: 'Falha ao processar sua requisição'+erro
+                message: 'Falha ao processar sua requisição'
             })
         }
     }
