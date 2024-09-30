@@ -38,6 +38,25 @@ export default class CustomerConntroller {
         }
     }
 
+    getAddressByCustomer = async (req: any, res: any, next: any) => {
+        let id = req.params.id
+        try {
+            var data = await this.repository.getAddressByCustomerCode(id)
+            if (data !== null) {
+                res.status(200).send(data)
+            } else {
+                res.status(404).send({
+                    error_code: 'NOT_FOUND',
+                    error_description: 'Cliente não encontrado'
+                })
+            }
+        } catch (erro) {
+            res.status(500).send({
+                message: 'Falha ao processar sua requisição' + erro
+            })
+        }
+    }
+
     post = async (req: any, res: any, next: any) => {
         let id = req.params.id
         try {
