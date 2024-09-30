@@ -21,7 +21,13 @@ export default class MeasureConntroller {
   getById = async (req: any, res: any, next: any) => {
     let id = req.params.id
     try {
-      var data = await this.repository.getById(id)
+      var data = await this.repository.getById(id);
+      if (data === null) {
+        res.status(404).send({
+          error_code: 'MEASURE NOT FOUND',
+          error_description: 'Measure not found'
+        })
+      }
       res.status(200).send(data)
     } catch (erro) {
       res.status(500).send({
@@ -74,17 +80,17 @@ export default class MeasureConntroller {
       const { image, customer_code, measure_datetime, measure_type } = req.body;
       let valid = validateReadingMeter({ image, customer_code, measure_datetime, measure_type });
       if (valid.error) {
-        if(valid.error.details[0].message === '\"customer_code\" is not allowed to be empty'){
-         error_description = 'Código de Cliente invalido';
+        if (valid.error.details[0].message === '\"customer_code\" is not allowed to be empty') {
+          error_description = 'Código de Cliente invalido';
         }
-        if(valid.error.details[0].message === 'Error code \"measure_type\" is not defined, your custom type is missing the correct messages definition'){
-          error_description = 'Tipo de leitura invalida'; 
+        if (valid.error.details[0].message === 'Error code \"measure_type\" is not defined, your custom type is missing the correct messages definition') {
+          error_description = 'Tipo de leitura invalida';
         }
-        if(valid.error.details[0].message === '\"measure_datetime\" is not allowed to be empty'){
-          error_description = 'Data invalida'; 
+        if (valid.error.details[0].message === '\"measure_datetime\" is not allowed to be empty') {
+          error_description = 'Data invalida';
         }
-        if(valid.error.details[0].message === '\"image\" must be a valid base64 string'){
-          error_description = 'Imagem invalida'; 
+        if (valid.error.details[0].message === '\"image\" must be a valid base64 string') {
+          error_description = 'Imagem invalida';
         }
         res.status(400).send({
           error_code: 'INVALID_DATA',
@@ -126,7 +132,7 @@ export default class MeasureConntroller {
           measure_datetime,
           measure_type,
           measure_value,
-          has_confirmed : 0
+          has_confirmed: 0
         }
         var measure_inserted = await this.repository.create(measure)
         res.status(200).send({
@@ -147,7 +153,14 @@ export default class MeasureConntroller {
   put = async (req: any, res: any, next: any) => {
     let id = req.params.id
     try {
-      var data = await this.repository.update(id, req.body)
+      var data = await this.repository.update(id, req.body);
+      if (data[0] === 0) {
+        res.status(404).send({
+          error_code: 'CUSTOMER ADDRESS NOT FOUND',
+          error_description: 'Customer Address not found'
+        })
+        return
+      }
       res.status(200).send(data)
     } catch (erro) {
       res.status(500).send({
@@ -165,7 +178,7 @@ export default class MeasureConntroller {
           error_code: 'INVALID_DATA',
           error_description: 'Dados invalidos'
         })
-      return
+        return
       }
       let measure = await this.repository.getById(measure_uuid);
       if (!measure) {
@@ -195,13 +208,21 @@ export default class MeasureConntroller {
   delete = async (req: any, res: any, next: any) => {
     let id = req.params.id
     try {
+      const data = await this.repository.getById(id);
+      if (data == null) {
+        res.status(404).send({
+          error_code: 'CUSTOMER ADDRESS NOT FOUND',
+          error_description: 'Customer Address not found'
+        })
+        return
+      }
       await this.repository.deleteById(id)
       res.status(200).send({
         message: 'Deleted'
       })
     } catch (erro) {
       res.status(500).send({
-        message: 'Falha ao processar sua requisição'+erro
+        message: 'Falha ao processar sua requisição' + erro
       })
     }
   }
