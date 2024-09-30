@@ -33,6 +33,7 @@ export default class CustomerRepository {
         const customer = await Customer.create(data);
         return customer.save();
     }
+
     update = async (customer_code: number, data: Customer) => {
         const customer = await Customer.findOne({
             where: {
@@ -42,6 +43,21 @@ export default class CustomerRepository {
         if (customer != null) {
             await Customer.update(
                 data,
+                { where: { customer_code }, returning: true }
+            );
+        }
+        return customer;
+    }
+
+    updateAccessToken = async (customer_code: any, data: any) => {
+        const customer = await Customer.findOne({
+            where: {
+                customer_code
+            }
+        })
+        if (customer != null) {
+            await Customer.update(
+                {access_token: data},
                 { where: { customer_code }, returning: true }
             );
         }
