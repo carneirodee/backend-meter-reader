@@ -14,9 +14,10 @@ const app = express();
 app.use(express.json());
 
 app.use('/uploads', express.static(path.join(__dirname1, '/uploads')));
-app.use('/customer', customerRouter);
-app.use('/address', addressRouter);
+app.use('/customers', customerRouter);
+app.use('/addresses', addressRouter);
 app.use('/', measureRouter)
+app.use('/measures', measureRouter)
 
 async function Initialization(): Promise<void> {
     try {

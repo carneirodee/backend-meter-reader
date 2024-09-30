@@ -10,7 +10,6 @@ addressRouter.get('/:id', controller.getById);
 
 addressRouter.post('/', controller.post);
 
-
 addressRouter.put('/:id', controller.put);
 
 addressRouter.delete('/:id', controller.delete);
