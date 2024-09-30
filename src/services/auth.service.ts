@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-dotenv.config({ path:'../.env' })
+dotenv.config({ path:'../envoriment.env' })
 
 const SALT_KEY = process.env.SALT_KEY
 

@@ -20,6 +20,15 @@ export default class CustomerRepository {
         return customer;
     }
 
+    getAddressByCustomerCode = async (id: any) => {
+        const customer = await Customer_Address.findOne({
+            where: {
+                customer_code: id
+            }
+        });
+        return customer;
+    }
+
     create = async (data: any) => {
         const customer = await Customer.create(data);
         return customer.save();

@@ -3,7 +3,7 @@ import { Sequelize } from 'sequelize-typescript';
 import path from 'path';
 import dotenv from 'dotenv';
 const __dirname1 = path.resolve();
-dotenv.config({ path: `${__dirname1}/src/.env` });
+dotenv.config({ path: `${__dirname1}/src/envoriment.env` });
 
 
 const sequelize = new Sequelize( `${process.env.DB_DATABASE}`, "postgres", "admin", {
