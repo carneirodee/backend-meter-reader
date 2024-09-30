@@ -1,7 +1,7 @@
 import CustomerAddressRepository from "../repositories/customer-address.repository";
 
 
-export default class CustomerAddressConntroller{
+export default class CustomerAddressController{
     constructor() {
     }
     repository = new CustomerAddressRepository();
@@ -62,7 +62,7 @@ export default class CustomerAddressConntroller{
             })
           } catch (erro) {
             res.status(500).send({
-              message: 'Falha ao processar sua requisição'
+              message: 'Falha ao processar sua requisição'+erro
             })
           }
     }

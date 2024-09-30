@@ -4,7 +4,7 @@ import MeasureConntroller from '../controllers/measure.controller'; // Assuming 
 const measureRouter: Router = express.Router();
 const controller = new MeasureConntroller();
 
-measureRouter.get('', controller.get);
+measureRouter.get('/measures', controller.get);
 
 measureRouter.get('/measure/:id', controller.getById);
 
@@ -12,11 +12,10 @@ measureRouter.get('/:id/list', controller.getByCustomerCode)
 
 measureRouter.post('/upload', controller.post);
 
-measureRouter.put('/:id', controller.put);
+measureRouter.put('/measure/:id', controller.put);
 
 measureRouter.patch('/confirm', controller.patch);
 
-
-measureRouter.delete(':id', controller.delete);
+measureRouter.delete('/measure/:id', controller.delete);
 
 export default measureRouter;

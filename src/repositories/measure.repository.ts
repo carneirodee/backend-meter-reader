@@ -44,8 +44,8 @@ export default class MeasureRepository {
 
     update = async (id: number, data: Measure) => {
         const measure = await Measure.update(
-            { data },
-            { where: { id }, returning: true }
+            data ,
+            { where: { measure_uuid: id }, returning: true }
         );
         return measure;
     }
@@ -62,6 +62,6 @@ export default class MeasureRepository {
     }
 
     deleteById = async (id: number) => {
-        await Measure.destroy({ where: { id } });
+        await Measure.destroy({ where: { measure_uuid: id } });
     }
 }

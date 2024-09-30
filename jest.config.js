@@ -3,7 +3,6 @@ export default {
   testEnvironment: "node",
   coveragePathIgnorePatterns: [
     "/node_modules/",
-    "/build/"
   ],
   transform: {
     "^.+\\.ts?$": ["ts-jest",{}],

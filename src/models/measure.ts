@@ -45,7 +45,7 @@ class Measure extends Model {
   declare measure_type: string;
 
   @Column({
-    type: DataType.STRING,
+    type: DataType.BOOLEAN,
   })
   declare has_confirmed: number;
 
@@ -56,9 +56,9 @@ class Measure extends Model {
 
   
   // @ForeignKey(() => Customer)
-  //   @Column({
-  //       type: DataType.UUID,
-  //     })
+    @Column({
+        type: DataType.UUID,
+      })
       declare customer_code: string;
 
 }
