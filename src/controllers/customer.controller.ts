@@ -78,7 +78,7 @@ export default class CustomerConntroller {
                     customer_code: data.customer_code
                 }
                 var data_address = await this.repositoryAddress.create(address);
-                res.status(200).send({data, address: data_address})
+                res.status(200).send({success: true, data, address: data_address})
 
             } else {
                 res.status(400).send({

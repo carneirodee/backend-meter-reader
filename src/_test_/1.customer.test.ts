@@ -15,9 +15,10 @@ describe('POST - Creating a Customer Profile', () => {
                 address: 'Rua São Geraldo, 213',
                 city: 'Juazeiro do Norte',
                 district: 'Pio XII',
-                contry: 'Brasil',
+                country: 'Brasil',
                 state: 'BA',
-                postal_code: '63020-496'
+                postal_code: '63020-496',
+                phone: '81900000'
             })
         expect(res.statusCode).toEqual(200);
         expect(res.body.success).toBe(true);
@@ -35,9 +36,10 @@ describe('POST - Creating a Customer Profile', () => {
                 address: 'Rua São Geraldo, 213',
                 city: 'Juazeiro do Norte',
                 district: 'Pio XII',
-                contry: 'Brasil',
+                country: 'Brasil',
                 state: 'BA',
-                postal_code: '63020-496'
+                postal_code: '63020-496',
+                phone: '81900000'
             })
         expect(res.statusCode).toEqual(400);
     });
