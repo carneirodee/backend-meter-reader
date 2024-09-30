@@ -13,7 +13,8 @@ const app = express();
 
 app.use(express.json());
 
-app.use('/uploads', express.static(path.join(__dirname1, '/uploads')));
+app.use('/uploads/measures', express.static(path.join(__dirname1, '/uploads/measures')));
+app.use('/uploads/profile_pictures', express.static(path.join(__dirname1, '/uploads/profile_pictures')));
 app.use('/customers', customerRouter);
 app.use('/addresses', addressRouter);
 app.use('/', measureRouter)
@@ -28,6 +29,7 @@ async function Initialization(): Promise<void> {
 }
 
 Initialization();
+
 
 app.get("/", (request: any, response: any) => {
     response.status(200).send({ message: "success" });
