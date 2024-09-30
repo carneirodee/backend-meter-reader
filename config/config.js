@@ -2,7 +2,7 @@
 import path from 'path';
 import dotenv from 'dotenv';
 const __dirname1= path.resolve();
-dotenv.config({ path: `${__dirname1}/src/.env` });
+dotenv.config({ path: `${__dirname1}/src/envoriment.env` });
 export default {
   development: {
     username: process.env.DB_USER,
