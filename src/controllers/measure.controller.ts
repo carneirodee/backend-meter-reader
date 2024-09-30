@@ -74,8 +74,8 @@ export default class MeasureConntroller {
   }
 
   post = async (req: any, res: any, next: any) => {
-    const data: any = []
-    const error_description = '';
+    let data: any = []
+    let error_description = '';
     try {
       const { image, customer_code, measure_datetime, measure_type } = req.body;
       let valid = validateReadingMeter({ image, customer_code, measure_datetime, measure_type });
