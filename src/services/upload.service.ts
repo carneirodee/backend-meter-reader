@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path';
 import dotenv from 'dotenv';
 const __dirname1 = path.resolve();
-dotenv.config({ path: `${__dirname1}/src/.env` });
+dotenv.config({ path: `${__dirname1}/src/envoriment.env` });
 
 const url = `http://${process.env.LOCALHOST}:${process.env.PORT}/uploads/out.png`;
 export const uploadImage = (imagesBase64: string) => {
