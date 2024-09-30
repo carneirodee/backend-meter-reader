@@ -5,19 +5,20 @@ import imagesBase64 from '../assets/image';
 describe('POST - Creating a Customer Profile', () => {
     it('should return status 200', async () => {
         const res = await request(app)
-            .post('/customer')
+            .post('/customers')
             .send({
                 code: '214.968.377-62',
                 name: 'Giovana Isabelle Sarah Ferreira',
                 email: 'giovanaisabela@email.com',
                 password: "test",
-                profile_picture: imagesBase64[2],
+                profile_picture: '',
                 address: 'Rua São Geraldo, 213',
                 city: 'Juazeiro do Norte',
                 district: 'Pio XII',
-                contry: 'Brasil',
+                country: 'Brasil',
                 state: 'BA',
-                postal_code: '63020-496'
+                postal_code: '63020-496',
+                phone: '81900000'
             })
         expect(res.statusCode).toEqual(200);
         expect(res.body.success).toBe(true);
@@ -25,7 +26,7 @@ describe('POST - Creating a Customer Profile', () => {
 
     it('should return status 400 - Invalid CPF', async () => {
         const res = await request(app)
-            .post('/customer')
+            .post('/customers')
             .send({
                 code: '076.514.063-25',
                 name: 'Liz Hadassa das Neves',
@@ -35,12 +36,12 @@ describe('POST - Creating a Customer Profile', () => {
                 address: 'Rua São Geraldo, 213',
                 city: 'Juazeiro do Norte',
                 district: 'Pio XII',
-                contry: 'Brasil',
+                country: 'Brasil',
                 state: 'BA',
-                postal_code: '63020-496'
+                postal_code: '63020-496',
+                phone: '81900000'
             })
-        expect(res.statusCode).toEqual(200);
-        expect(res.body.success).toBe(true);
+        expect(res.statusCode).toEqual(400);
     });
 
 });
@@ -49,7 +50,7 @@ describe('PUT - Updating a Customer Profile', () => {
     it('should return status 200 - Updating Password', async () => {
         const customer_code = '27a17b78-2f04-4e7e-9c18-d10ebc858d8a';
         const res = await request(app)
-            .put(`/customer/${customer_code}`)
+            .put(`/customers/${customer_code}`)
             .send({
                 code: '214.968.377-62',
                 name: 'Isis Mariane Valentina Figueiredo',
@@ -71,14 +72,13 @@ describe('PUT - Updating a Customer Profile', () => {
     it('should return status 404', async () => {
         const customer_code = '446e322d-45a7-4110-ad48-48b1f60bab13';
         const res = await request(app)
-            .put(`/customer/${customer_code}`)
+            .put(`/customers/${customer_code}`)
             .send({
-                customer_code: '',
                 code: '214.968.377-62',
                 name: 'Giovana Isabelle Sarah Ferreira',
                 email: 'giovanaisabele@email.com',
                 password: "test",
-                profile_picture: imagesBase64[2],
+                profile_picture: '',
                 address: 'Rua São Geraldo, 213',
                 city: 'Juazeiro do Norte',
                 district: 'Pio XII',
@@ -110,9 +110,9 @@ describe('GET - Getting a Customer Profile', () => {
 
 describe('DELETE - Deleting a Customer Profile', () => {
     it('should return status 200', async () => {
-        const customer_code = '299394b2-92c3-47c8-9271-a6cd08363174';
+        const customer_code = '84ed5afe-fc7e-4abd-b50b-9d24a8869851';
         const res = await request(app)
-            .delete(`/customers/${customer_code}/list`);
+            .delete(`/customers/${customer_code}`);
         expect(res.statusCode).toEqual(200);
     });
 

@@ -1,4 +1,6 @@
 import Customer from "../models/customer";
+import Customer_Address from "../models/customer-address";
+import Measure from "../models/measure";
 
 export default class CustomerRepository {
     constructor() {
@@ -10,23 +12,55 @@ export default class CustomerRepository {
     }
 
     getById = async (id: any) => {
-        const customers = await Customer.findOne({
+        const customer = await Customer.findOne({
             where: {
-                id: id
+                customer_code: id
             }
         });
-        return customers;
+        return customer;
+    }
+
+    getAddressByCustomerCode = async (id: any) => {
+        const customer = await Customer_Address.findOne({
+            where: {
+                customer_code: id
+            }
+        });
+        return customer;
     }
 
     create = async (data: any) => {
         const customer = await Customer.create(data);
         return customer.save();
     }
-    update = async (id: number, data: any) => {
-        const customer = await Customer.update(
-            data,
-            { where: { id }, returning: true }
-        );
+
+    update = async (customer_code: number, data: Customer) => {
+        const customer = await Customer.findOne({
+            where: {
+                customer_code
+            }
+        })
+        if (customer != null) {
+            await Customer.update(
+                data,
+                { where: { customer_code }, returning: true }
+            );
+        }
+        return customer;
+    }
+
+    updateAccessToken = async (customer_code: any, data: any) => {
+        const customer = await Customer.findOne({
+            where: {
+                customer_code
+            }
+        })
+        if (customer != null) {
+            await Customer.update(
+                {access_token: data},
+                { where: { customer_code }, returning: true }
+            );
+        }
         return customer;
     }
 
@@ -40,8 +74,19 @@ export default class CustomerRepository {
         return customer;
     }
 
-    deleteById = async (id: number) => {
-        await Customer.destroy({ where: { id } });
+    deleteById = async (customer_code: number) => {
+        console.log("DELETING", customer_code)
+        const customer = await Customer.findOne({
+            where: {
+                customer_code
+            }
+        })
+        
+        if (customer != null) {
+            await Customer_Address.destroy({ where: { customer_code}})
+            await Customer.destroy({ where: { customer_code } });
+        }
+        return customer
     }
 
 }

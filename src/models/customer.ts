@@ -66,8 +66,8 @@ class Customer extends Model<Customer> {
   })
   declare is_active: string;
 
-  @HasMany(()=> Measure)
-  declare measures: Measure[];
+  // @HasMany(()=> Measure)
+  // declare measures: Measure[];
 
   @HasOne(() => Customer_Address)  
   declare address: Customer_Address;

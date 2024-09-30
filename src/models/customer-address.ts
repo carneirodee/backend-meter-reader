@@ -22,8 +22,7 @@ class Customer_Address extends Model{
     @AllowNull(false)
     @Column({
         primaryKey: true,
-        type: DataType.INTEGER,
-        defaultValue: DataType.INTEGER,
+        type: DataType.UUID,
     })
     declare costumer_address_id: number;
 

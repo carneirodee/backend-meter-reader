@@ -1,18 +1,28 @@
+import CustomerAddressRepository from "../repositories/customer-address.repository";
 import CustomerRepository from "../repositories/customer.repository";
 import { generateToken } from "../services/auth.service";
+import { validateCode } from "../validators/validations";
+import { uploadImage, uploadProfilePicture } from '../services/upload.service';
+import { v4 as uuidv4 } from 'uuid';
+import md5 from 'md5';
+import dotenv from 'dotenv';
+dotenv.config({ path: '../envoriment.env' })
 
+const SALT_KEY = process.env.SALT_KEY
 export default class CustomerConntroller {
     constructor() {
     }
     repository = new CustomerRepository();
+    repositoryAddress = new CustomerAddressRepository();
+
 
     get = async (req: any, res: any, next: any) => {
         try {
-            var data = await this.repository.getAll()
+            const data = await this.repository.getAll()
             res.status(200).send(data)
         } catch (erro) {
             res.status(500).send({
-                message: 'Falha ao processar sua requisição'
+                message: 'Falha ao processar sua requisição' + erro
             })
         }
     }
@@ -20,23 +30,77 @@ export default class CustomerConntroller {
     getById = async (req: any, res: any, next: any) => {
         let id = req.params.id
         try {
-            var data = await this.repository.getById(id)
-            res.status(200).send(data)
+            const data = await this.repository.getById(id)
+            if (data !== null) {
+                res.status(200).send(data)
+            } else {
+                res.status(404).send({
+                    error_code: 'NOT_FOUND',
+                    error_description: 'Cliente não encontrado'
+                })
+            }
         } catch (erro) {
             res.status(500).send({
-                message: 'Falha ao processar sua requisição'
+                message: 'Falha ao processar sua requisição' + erro
+            })
+        }
+    }
+
+    getAddressByCustomer = async (req: any, res: any, next: any) => {
+        let id = req.params.id
+        try {
+            const data = await this.repository.getAddressByCustomerCode(id)
+            if (data !== null) {
+                res.status(200).send(data)
+            } else {
+                res.status(404).send({
+                    error_code: 'NOT_FOUND',
+                    error_description: 'Cliente não encontrado'
+                })
+            }
+        } catch (erro) {
+            res.status(500).send({
+                message: 'Falha ao processar sua requisição' + erro
             })
         }
     }
 
     post = async (req: any, res: any, next: any) => {
-        let id = req.params.id
+        let id = req.params.id;
         try {
-            var data = await this.repository.create(req.body)
-            res.status(200).send(data)
+            req.body.customer_code = uuidv4();
+            req.body.is_active = 1;
+            req.body.password = md5(req.body.senha + SALT_KEY)
+            const url = uploadProfilePicture(req.body.customer_code, req.body.profile_picture);
+            if (url) {
+                req.body.profile_picture = url;
+            }
+
+            if (validateCode(req.body.code)) {
+                const data = await this.repository.create(req.body);
+                const address = {
+                    address: req.body.address || null,
+                    city: req.body.city || null,
+                    district: req.body.district || null,
+                    country: req.body.country || null,
+                    state: req.body.state || null,
+                    postal_code: req.body.postal_code || null,
+                    phone: req.body.phone || null,
+                    customer_code: data.customer_code
+                }
+                const data_address = await this.repositoryAddress.create(address);
+                res.status(200).send({ success: true, data, address: data_address })
+
+            } else {
+                res.status(400).send({
+                    error_code: 'INVALID_CODE',
+                    error_description: 'CPF Invalido'
+                })
+                return;
+            }
         } catch (erro) {
             res.status(500).send({
-                message: 'Falha ao processar sua requisição'+erro
+                message: 'Falha ao processar sua requisição' + erro
             })
         }
     }
@@ -44,8 +108,18 @@ export default class CustomerConntroller {
     put = async (req: any, res: any, next: any) => {
         let id = req.params.id
         try {
-            var data = await this.repository.update(id, req.body)
-            res.status(200).send(data)
+            req.body.password = md5(req.body.senha + SALT_KEY);
+            const data = await this.repository.update(id, req.body)
+            if (data !== null) {
+                res.status(200).send({
+                    success: true
+                })
+            } else {
+                res.status(404).send({
+                    error_code: 'NOT_FOUND',
+                    error_description: 'Cliente não encontrado'
+                })
+            }
         } catch (erro) {
             res.status(500).send({
                 message: 'Falha ao processar sua requisição'
@@ -56,22 +130,29 @@ export default class CustomerConntroller {
     delete = async (req: any, res: any, next: any) => {
         let id = req.params.id
         try {
-            await this.repository.deleteById(id)
-            res.status(200).send({
-                message: 'Deleted'
-            })
+            const data = await this.repository.deleteById(id)
+            if (data !== null) {
+                res.status(200).send({
+                    message: 'Deleted'
+                })
+            } else {
+                res.status(404).send({
+                    error_code: 'NOT_FOUND',
+                    error_description: 'Cliente não encontrado'
+                })
+            }
         } catch (erro) {
             res.status(500).send({
-                message: 'Falha ao processar sua requisição'
+                message: 'Falha ao processar sua requisição' + erro
             })
         }
     }
 
     authenticate = async (req: any, res: any, next: any) => {
         try {
-            var data = await this.repository.authenticate({
+            const data = await this.repository.authenticate({
                 email: req.body.email,
-                password: req.body.password
+                password: md5(req.body.senha + SALT_KEY)
             });
             if (!data) {
                 res.status(404).send({
@@ -85,16 +166,18 @@ export default class CustomerConntroller {
                 email: data.email,
                 name: data.name
             })
+
+            await this.repository.updateAccessToken(data.customer_code, token)
+
             res.status(200).send({
                 token: token,
                 data: {
                     email: data.email,
-                    nome: data.name
+                    nome: data.name,
+                    profile_picture: data.profile_picture
                 },
                 message: 'Autenticação feita com sucesso'
             })
-
-            res.status(200).send(data)
         } catch (erro) {
             res.status(500).send({
                 message: 'Falha ao processar sua requisição'

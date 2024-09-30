@@ -9,6 +9,8 @@ customerRouter.get('/', controller.get);
 
 customerRouter.get('/:id', controller.getById);
 
+customerRouter.get('/address/:id', controller.getAddressByCustomer);
+
 customerRouter.post('/', controller.post);
 
 customerRouter.post('/authenticate', controller.authenticate);

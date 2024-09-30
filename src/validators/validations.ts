@@ -1,4 +1,7 @@
 import Joi, { LanguageMessages } from "joi";
+import { cpf } from 'cpf-cnpj-validator';
+import { cnpj } from 'cpf-cnpj-validator';
+
 
 export const validateConfirmValue = (data: { measure_uuid: string, confirmed_value: number }) => {
 
@@ -30,4 +33,17 @@ export const validateReadingMeter = (data: { image: string, customer_code: strin
     });
 
     return confirmationSchema.validate(data);
+}
+
+export const validateCode = (code: any) => {
+    code.replace('.', '');
+    code.replace('-', '');
+    if (cpf.isValid(code)) {
+        return true
+    } else if (cnpj.isValid(code)) {
+        return true
+    } else {
+        return false
+    }
+
 }
