@@ -13,7 +13,7 @@ export default class CustomerConntroller {
 
     get = async (req: any, res: any, next: any) => {
         try {
-            var data = await this.repository.getAll()
+            const data = await this.repository.getAll()
             res.status(200).send(data)
         } catch (erro) {
             res.status(500).send({
@@ -25,7 +25,7 @@ export default class CustomerConntroller {
     getById = async (req: any, res: any, next: any) => {
         let id = req.params.id
         try {
-            var data = await this.repository.getById(id)
+            const data = await this.repository.getById(id)
             if (data !== null) {
                 res.status(200).send(data)
             } else {
@@ -44,7 +44,7 @@ export default class CustomerConntroller {
     getAddressByCustomer = async (req: any, res: any, next: any) => {
         let id = req.params.id
         try {
-            var data = await this.repository.getAddressByCustomerCode(id)
+            const data = await this.repository.getAddressByCustomerCode(id)
             if (data !== null) {
                 res.status(200).send(data)
             } else {
@@ -66,7 +66,7 @@ export default class CustomerConntroller {
             req.body.customer_code = uuidv4();
             req.body.is_active = 1;
             if (validateCode(req.body.code)) {
-                var data = await this.repository.create(req.body);
+                const data = await this.repository.create(req.body);
                 const address = {
                     address: req.body.address || null,
                     city: req.body.city || null,
@@ -77,8 +77,8 @@ export default class CustomerConntroller {
                     phone: req.body.phone || null,
                     customer_code: data.customer_code
                 }
-                var data_address = await this.repositoryAddress.create(address);
-                res.status(200).send({success: true, data, address: data_address})
+                const data_address = await this.repositoryAddress.create(address);
+                res.status(200).send({ success: true, data, address: data_address })
 
             } else {
                 res.status(400).send({
@@ -97,7 +97,7 @@ export default class CustomerConntroller {
     put = async (req: any, res: any, next: any) => {
         let id = req.params.id
         try {
-            var data = await this.repository.update(id, req.body)
+            const data = await this.repository.update(id, req.body)
             if (data !== null) {
                 res.status(200).send({
                     success: true
@@ -118,7 +118,7 @@ export default class CustomerConntroller {
     delete = async (req: any, res: any, next: any) => {
         let id = req.params.id
         try {
-            var data = await this.repository.deleteById(id)
+            const data = await this.repository.deleteById(id)
             if (data !== null) {
                 res.status(200).send({
                     message: 'Deleted'
@@ -138,7 +138,7 @@ export default class CustomerConntroller {
 
     authenticate = async (req: any, res: any, next: any) => {
         try {
-            var data = await this.repository.authenticate({
+            const data = await this.repository.authenticate({
                 email: req.body.email,
                 password: req.body.password
             });
@@ -154,6 +154,9 @@ export default class CustomerConntroller {
                 email: data.email,
                 name: data.name
             })
+
+            await this.repository.updateAccessToken(data.customer_code, token)
+
             res.status(200).send({
                 token: token,
                 data: {
@@ -164,7 +167,7 @@ export default class CustomerConntroller {
             })
         } catch (erro) {
             res.status(500).send({
-                message: 'Falha ao processar sua requisição'
+                message: 'Falha ao processar sua requisição'+erro
             })
         }
     }

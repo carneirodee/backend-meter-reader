@@ -9,7 +9,7 @@ export default class MeasureConntroller {
 
   get = async (req: any, res: any, next: any) => {
     try {
-      var data = await this.repository.getAll();
+      const data = await this.repository.getAll();
       res.status(200).send(data)
     } catch (erro) {
       res.status(500).send({
@@ -21,7 +21,7 @@ export default class MeasureConntroller {
   getById = async (req: any, res: any, next: any) => {
     let id = req.params.id
     try {
-      var data = await this.repository.getById(id);
+      const data = await this.repository.getById(id);
       if (data === null) {
         res.status(404).send({
           error_code: 'MEASURE NOT FOUND',
@@ -61,7 +61,7 @@ export default class MeasureConntroller {
         })
         return;
       }
-      var result = {
+      const result = {
         customer_code: id,
         data
       }
@@ -74,8 +74,8 @@ export default class MeasureConntroller {
   }
 
   post = async (req: any, res: any, next: any) => {
-    var data: any = []
-    var error_description = '';
+    const data: any = []
+    const error_description = '';
     try {
       const { image, customer_code, measure_datetime, measure_type } = req.body;
       let valid = validateReadingMeter({ image, customer_code, measure_datetime, measure_type });
@@ -134,7 +134,7 @@ export default class MeasureConntroller {
           measure_value,
           has_confirmed: 0
         }
-        var measure_inserted = await this.repository.create(measure)
+        const measure_inserted = await this.repository.create(measure)
         res.status(200).send({
           image_url: uploadResult,
           measure_value,
@@ -153,7 +153,7 @@ export default class MeasureConntroller {
   put = async (req: any, res: any, next: any) => {
     let id = req.params.id
     try {
-      var data = await this.repository.update(id, req.body);
+      const data = await this.repository.update(id, req.body);
       if (data[0] === 0) {
         res.status(404).send({
           error_code: 'CUSTOMER ADDRESS NOT FOUND',
