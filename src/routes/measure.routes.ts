@@ -12,10 +12,10 @@ measureRouter.get('/:id/list', controller.getByCustomerCode)
 
 measureRouter.post('/upload', controller.post);
 
-measureRouter.put('/measure/:id', controller.put);
+measureRouter.put('measure/:id', controller.put);
 
 measureRouter.patch('/confirm', controller.patch);
 
-measureRouter.delete('/measure/:id', controller.delete);
+measureRouter.delete('/measures/:id', controller.delete);
 
 export default measureRouter;

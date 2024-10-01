@@ -4,7 +4,7 @@
   "main": "./src/server.ts",
   "scripts": {
     "build": "tsc",
-    "test": "node --experimental-vm-modules  node_modules/jest/bin/jest.js ",
+    "test": "npm run db:migrate && node --experimental-vm-modules  node_modules/jest/bin/jest.js ",
     "start": "npm run build && node --experimental-specifier-resolution=node --loader ts-node/esm ./build/src/server.js",
     "dev": "nodemon",
     "db:create": "npx sequelize-cli db:create",
@@ -26,7 +26,6 @@
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "md5": "^2.3.0",
-    "mysql2": "^3.11.3",
     "pg-pool": "^3.7.0",
     "sequelize": "^6.37.3",
     "sequelize-typescript": "^2.1.6",

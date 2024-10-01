@@ -9,7 +9,7 @@ customerRouter.get('/', controller.get);
 
 customerRouter.get('/:id', controller.getById);
 
-customerRouter.get('/address/:id', controller.getAddressByCustomer);
+customerRouter.get('/:id/address', controller.getAddressByCustomer);
 
 customerRouter.post('/', controller.post);
 
