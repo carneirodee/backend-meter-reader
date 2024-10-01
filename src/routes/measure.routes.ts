@@ -6,13 +6,13 @@ const controller = new MeasureConntroller();
 
 measureRouter.get('/measures', controller.get);
 
-measureRouter.get('/measure/:id', controller.getById);
+measureRouter.get('/measures/:id', controller.getById);
 
 measureRouter.get('/:id/list', controller.getByCustomerCode)
 
 measureRouter.post('/upload', controller.post);
 
-measureRouter.put('measure/:id', controller.put);
+measureRouter.put('/measures/:id', controller.put);
 
 measureRouter.patch('/confirm', controller.patch);
 

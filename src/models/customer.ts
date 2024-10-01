@@ -5,7 +5,8 @@ import {
   DataType,
   HasMany,
   AllowNull,
-  HasOne
+  HasOne,
+  Unique
 } from 'sequelize-typescript';
 
 import Customer_Address from './customer-address';
@@ -39,6 +40,7 @@ class Customer extends Model<Customer> {
   declare name: string;
 
   @AllowNull(false)
+  @Unique
   @Column({
     type: DataType.STRING,
   })
