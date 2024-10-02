@@ -172,6 +172,12 @@ Run on the command line
 docker compose up -d
 ```
 
+## Documentation
+
+Run the application and access [http://localhost:3000/docs](http://localhost:3000/docs)
+
+* [ ]  ![1727827325403](images/README/1727827325403.png)
+
 ## Endpoints
 
 ### POST /customers
