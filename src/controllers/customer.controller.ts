@@ -1,7 +1,7 @@
 import CustomerAddressRepository from "../repositories/customer-address.repository";
 import CustomerRepository from "../repositories/customer.repository";
 import { generateToken } from "../services/auth.service";
-import { validateCode } from "../validators/validations";
+import { validateCode, validateUUID } from "../validators/validations";
 import { uploadImage, uploadProfilePicture } from '../services/upload.service';
 import { v4 as uuidv4 } from 'uuid';
 import md5 from 'md5';
@@ -30,6 +30,14 @@ export default class CustomerConntroller {
     getById = async (req: any, res: any, next: any) => {
         let id = req.params.id
         try {
+            let valid = validateUUID({ id: id });
+            if (valid.error) {
+                res.status(400).send({
+                    error_code: 'INVALID_ID',
+                    error_description: 'Id invalido'
+                })
+                return
+            }
             const data = await this.repository.getById(id)
             if (data !== null) {
                 res.status(200).send(data)
@@ -49,6 +57,14 @@ export default class CustomerConntroller {
     getAddressByCustomer = async (req: any, res: any, next: any) => {
         let id = req.params.id
         try {
+            let valid = validateUUID({ id: id });
+            if (valid.error) {
+                res.status(400).send({
+                    error_code: 'INVALID_ID',
+                    error_description: 'Id invalido'
+                })
+                return
+            }
             const data = await this.repository.getAddressByCustomerCode(id)
             if (data !== null) {
                 res.status(200).send(data)
@@ -71,9 +87,11 @@ export default class CustomerConntroller {
             req.body.customer_code = uuidv4();
             req.body.is_active = 1;
             req.body.password = md5(req.body.senha + SALT_KEY)
-            const url = uploadProfilePicture(req.body.customer_code, req.body.profile_picture);
-            if (url) {
-                req.body.profile_picture = url;
+            if (req.body.profile_picture != '') {
+                const url = uploadProfilePicture(req.body.customer_code, req.body.profile_picture);
+                if (url) {
+                    req.body.profile_picture = url;
+                }
             }
 
             if (validateCode(req.body.code)) {
@@ -108,6 +126,20 @@ export default class CustomerConntroller {
     put = async (req: any, res: any, next: any) => {
         let id = req.params.id
         try {
+            let valid = validateUUID({ id: id });
+            if (valid.error) {
+                res.status(400).send({
+                    error_code: 'INVALID_ID',
+                    error_description: 'Id invalido'
+                })
+                return
+            }
+            if (req.body.profile_picture != '') {
+                const url = uploadProfilePicture(req.body.customer_code, req.body.profile_picture);
+                if (url) {
+                    req.body.profile_picture = url;
+                }
+            }
             req.body.password = md5(req.body.senha + SALT_KEY);
             const data = await this.repository.update(id, req.body)
             if (data !== null) {
@@ -130,6 +162,14 @@ export default class CustomerConntroller {
     delete = async (req: any, res: any, next: any) => {
         let id = req.params.id
         try {
+            let valid = validateUUID({ id: id });
+            if (valid.error) {
+                res.status(400).send({
+                    error_code: 'INVALID_ID',
+                    error_description: 'Id invalido'
+                })
+                return
+            }
             const data = await this.repository.deleteById(id)
             if (data !== null) {
                 res.status(200).send({
