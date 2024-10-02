@@ -6,12 +6,16 @@ import path from 'path';
 import customerRouter from './routes/customer.routes';
 import addressRouter from './routes/customer-address.routes';
 import measureRouter from './routes/measure.routes';
-import swaggerDocs from './swagger.json'
+import fs from 'fs';
 dotenv.config()
 
 const __dirname1 = path.resolve();
 
 const app = express();
+
+const loadJSON = (path : any) => JSON.parse(fs.readFileSync(new URL(path, import.meta.url)).toString());
+
+const swaggerDocs = loadJSON('./docs/swagger.json');
 
 app.use(express.json());
 
