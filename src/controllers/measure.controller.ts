@@ -1,5 +1,5 @@
 import MeasureRepository from "../repositories/measure.repository";
-import { validateConfirmValue, validateMeasureType, validateReadingMeter } from "../validators/validations";
+import { validateUUID, validateConfirmValue, validateMeasureType, validateReadingMeter } from "../validators/validations";
 import { analyzeImage } from '../services/gemini.service';
 import { uploadImage } from '../services/upload.service';
 export default class MeasureConntroller {
@@ -21,10 +21,18 @@ export default class MeasureConntroller {
   getById = async (req: any, res: any, next: any) => {
     let id = req.params.id
     try {
+      let valid = validateUUID({ id: id });
+      if (valid.error) {
+        res.status(400).send({
+          error_code: 'INVALID_ID',
+          error_description: 'Id invalido'
+        })
+        return
+      }
       const data = await this.repository.getById(id);
       if (data === null) {
         res.status(404).send({
-          error_code: 'MEASURE NOT FOUND',
+          error_code: 'MEASURE_NOT_FOUND',
           error_description: 'Measure not found'
         })
       }
@@ -63,7 +71,7 @@ export default class MeasureConntroller {
       }
       const result = {
         customer_code: id,
-        data
+        measures: data
       }
       res.status(200).send(result)
     } catch (erro) {
@@ -121,7 +129,7 @@ export default class MeasureConntroller {
       console.log('Value', measure_value)
       const uploadResult = uploadImage(customer_code, image);
       if (!uploadResult) {
-        return res.status(400).send({
+        return res.status(500).send({
           error_code: 'INVALID_DATA',
           error_description: 'Upload de imagem não foi feito'
         })
@@ -152,16 +160,44 @@ export default class MeasureConntroller {
 
   put = async (req: any, res: any, next: any) => {
     let id = req.params.id
+    const { image, customer_code, measure_datetime, measure_type } = req.body;
+    let measure = {}
     try {
-      const data = await this.repository.update(id, req.body);
-      if (data[0] === 0) {
-        res.status(404).send({
-          error_code: 'MEASURE NOT FOUND',
-          error_description: 'Measure not found'
+      let valid = validateUUID({ id: id });
+      if (valid.error) {
+        res.status(400).send({
+          error_code: 'INVALID_ID',
+          error_description: 'Id invalido'
         })
         return
       }
-      res.status(200).send(data)
+      const measure_value = parseInt(await analyzeImage(image))
+      console.log('Value', measure_value)
+      const uploadResult = uploadImage(customer_code, image);
+      if (!uploadResult) {
+        return res.status(500).send({
+          error_code: 'INVALID_DATA',
+          error_description: 'Upload de imagem não foi feito'
+        })
+      } else {
+        measure = {
+          image_url: uploadResult,
+          customer_code,
+          measure_datetime,
+          measure_type,
+          measure_value,
+          has_confirmed: 0
+        }
+        const data = await this.repository.update(id, measure);
+        if (data[0] === 0) {
+          res.status(404).send({
+            error_code: 'MEASURE_NOT_FOUND',
+            error_description: 'Measure not found'
+          })
+          return
+        }
+        res.status(200).send(data[1][0])
+      }
     } catch (erro) {
       res.status(500).send({
         message: 'Falha ao processar sua requisição'
@@ -208,10 +244,18 @@ export default class MeasureConntroller {
   delete = async (req: any, res: any, next: any) => {
     let id = req.params.id
     try {
+      let valid = validateUUID({ id: id });
+      if (valid.error) {
+        res.status(400).send({
+          error_code: 'INVALID_ID',
+          error_description: 'Id invalido'
+        })
+        return
+      }
       const data = await this.repository.getById(id);
       if (data == null) {
         res.status(404).send({
-          error_code: 'MEASURE NOT FOUND',
+          error_code: 'MEASURE_NOT_FOUND',
           error_description: 'Measure not found'
         })
         return

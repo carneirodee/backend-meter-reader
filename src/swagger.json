@@ -1,0 +1,2045 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Backend Meter Reader API",
+        "description": "Backend application for monitoring and managing water and gas meter readings.",
+        "contact": {
+            "email": "deysedayane.o.c@gmail.com"
+        },
+        "version": "1.0.0",
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    },
+    "schemes": [
+        "http"
+    ],
+    "paths": {
+        "/customers": {
+            "post": {
+                "tags": [
+                    "customers"
+                ],
+                "summary": "Create customers",
+                "description": "Create a new customer and returns it",
+                "produces": [
+                    "application/json"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Customer"
+                            },
+                            "examples": {
+                                "customer": {
+                                    "value": {
+                                        "address": "Rua São Geraldo, 213",
+                                        "code": "214.968.377-62",
+                                        "name": "Giovana Isabelle Sarah Ferreira",
+                                        "email": "giovanaisabela@email.com",
+                                        "password": "test",
+                                        "profile_picture": "",
+                                        "city": "Juazeiro do Norte",
+                                        "district": "Pio XII",
+                                        "country": "Brasil",
+                                        "state": "BA",
+                                        "postal_code": "63020-496",
+                                        "phone": "81900000"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Customer-Response"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid cpf or cnpj",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error_code": {
+                                            "type": "string",
+                                            "default": "INVALID_CODE"
+                                        },
+                                        "error_description": {
+                                            "type": "string",
+                                            "default": "CPF Invalido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "default": "Falha ao processar sua requisição"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            },
+            "get": {
+                "tags": [
+                    "customers"
+                ],
+                "summary": "List all customers",
+                "description": "Return a array of consumers",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Customer-Response-List"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "500": {
+                    "description": "Internal Server Error",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "default": "Falha ao processar sua requisição"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "api_key": []
+                }
+            ]
+        },
+        "/customers/{customer_code}": {
+            "get": {
+                "tags": [
+                    "customers"
+                ],
+                "parameters": [
+                    {
+                        "name": "customer_code",
+                        "in": "path",
+                        "description": "Customer Id",
+                        "required": true
+                    }
+                ],
+                "summary": "Get a specific customer by id",
+                "description": "Return a customer by id",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Customer-Response"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid customer id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error_code": {
+                                            "type": "string",
+                                            "default": "INVALID_ID"
+                                        },
+                                        "error_description": {
+                                            "type": "string",
+                                            "default": "Id invalido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Customer not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error_code": {
+                                            "type": "string",
+                                            "default": "NOT_FOUND"
+                                        },
+                                        "error_description": {
+                                            "type": "string",
+                                            "default": "Cliente não encontrado"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "default": "Falha ao processar sua requisição"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "customers"
+                ],
+                "parameters": [
+                    {
+                        "name": "customer_code",
+                        "in": "path",
+                        "description": "Customer Id",
+                        "required": true
+                    }
+                ],
+                "summary": "Update a specific customer",
+                "description": "Update a customer by id",
+                "produces": [
+                    "application/json"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Customer"
+                            },
+                            "examples": {
+                                "customer": {
+                                    "value": {
+                                        "address": "Rua São Geraldo, 213",
+                                        "code": "214.968.377-62",
+                                        "name": "Giovana Isabelle Sarah Ferreira",
+                                        "email": "giovannaisabela@email.com",
+                                        "password": "test",
+                                        "profile_picture": "",
+                                        "city": "Juazeiro do Norte",
+                                        "district": "Pio XII",
+                                        "country": "Brasil",
+                                        "state": "BA",
+                                        "postal_code": "63020-496",
+                                        "phone": "81900000"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "default": true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error_code": {
+                                            "type": "string",
+                                            "default": "INVALID_ID"
+                                        },
+                                        "error_description": {
+                                            "type": "string",
+                                            "default": "Id invalido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Customer not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error_code": {
+                                            "type": "string",
+                                            "default": "NOT_FOUND"
+                                        },
+                                        "error_description": {
+                                            "type": "string",
+                                            "default": "Cliente não encontrado"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "default": "Falha ao processar sua requisição"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "customers"
+                ],
+                "parameters": [
+                    {
+                        "name": "customer_code",
+                        "in": "path",
+                        "description": "Customer Id",
+                        "required": true
+                    }
+                ],
+                "summary": "Delete a specific customer",
+                "description": "Delete a customer by id",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "string",
+                                            "default": "Deleted"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid cpf or cnpj",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error_code": {
+                                            "type": "string",
+                                            "default": "INVALID_ID"
+                                        },
+                                        "error_description": {
+                                            "type": "string",
+                                            "default": "Id invalido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Customer not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error_code": {
+                                            "type": "string",
+                                            "default": "NOT_FOUND"
+                                        },
+                                        "error_description": {
+                                            "type": "string",
+                                            "default": "Cliente não encontrado"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "default": "Falha ao processar sua requisição"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/customers/{customer_code}/address": {
+            "get": {
+                "tags": [
+                    "customers"
+                ],
+                "parameters": [
+                    {
+                        "name": "customer_code",
+                        "in": "path",
+                        "description": "Customer Id",
+                        "required": true
+                    }
+                ],
+                "summary": "Get a address from a specific customer",
+                "description": "Get the address from a customer by customer id",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Customer-Address-Response"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid cpf or cnpj",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error_code": {
+                                            "type": "string",
+                                            "default": "INVALID_ID"
+                                        },
+                                        "error_description": {
+                                            "type": "string",
+                                            "default": "Id invalido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Customer not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error_code": {
+                                            "type": "string",
+                                            "default": "NOT_FOUND"
+                                        },
+                                        "error_description": {
+                                            "type": "string",
+                                            "default": "Cliente não encontrado"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "default": "Falha ao processar sua requisição"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/customers/authenticate": {
+            "post": {
+                "tags": [
+                    "customers"
+                ],
+                "summary": "Authentication customer",
+                "description": "Authenticate a customer",
+                "produces": [
+                    "application/json"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Customer-Authentication"
+                            },
+                            "examples": {
+                                "login": {
+                                    "value": {
+                                        "email": "giovanaisabela@email.com",
+                                        "password": "test"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Customer-Authentication-Response"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Password or Customer invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error_code": {
+                                            "type": "string",
+                                            "default": "NOT_FOUND"
+                                        },
+                                        "error_description": {
+                                            "type": "string",
+                                            "default": "Cliente não encontrado"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "default": "Falha ao processar sua requisição"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/addresses": {
+            "post": {
+                "tags": [
+                    "addresses"
+                ],
+                "summary": "Create addresses",
+                "description": "Create a new address and returns it",
+                "produces": [
+                    "application/json"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Customer-Address"
+                            },
+                            "examples": {
+                                "address": {
+                                    "value": {
+                                        "address": "Rua São Geraldo, 213",
+                                        "city": "Juazeiro do Norte",
+                                        "district": "Pio XII",
+                                        "country": "Brasil",
+                                        "state": "BA",
+                                        "postal_code": "63020-496",
+                                        "phone": "890000000",
+                                        "customer_code": "299394b2-92c3-47c8-9271-a6cd08363174"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Customer-Address-Response"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "default": "Falha ao processar sua requisição"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            },
+            "get": {
+                "tags": [
+                    "addresses"
+                ],
+                "summary": "List all addresses",
+                "description": "Return a array of addresses",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Customer-Address-Response"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "500": {
+                    "description": "Internal Server Error",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "default": "Falha ao processar sua requisição"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/addresses/{id}": {
+            "get": {
+                "tags": [
+                    "addresses"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Address Id",
+                        "required": true
+                    }
+                ],
+                "summary": "Get a specific address by id",
+                "description": "Return a address by id",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Customer-Address-Response"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Address not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error_code": {
+                                            "type": "string",
+                                            "default": "CUSTOMER_ADDRESS_NOT_FOUND"
+                                        },
+                                        "error_description": {
+                                            "type": "string",
+                                            "default": "Customer Address not found"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "default": "Falha ao processar sua requisição"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "addresses"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Address Id",
+                        "required": true
+                    }
+                ],
+                "summary": "Update a specific address",
+                "description": "Update a address by id",
+                "produces": [
+                    "application/json"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Customer-Address"
+                            },
+                            "examples": {
+                                "address": {
+                                    "value": {
+                                        "address": "Rua São Geraldo, 213",
+                                        "city": "Juazeiro do Norte",
+                                        "district": "Pio XII",
+                                        "country": "Brasil",
+                                        "state": "BA",
+                                        "postal_code": "63020-496",
+                                        "phone": "890000000",
+                                        "customer_code": "299394b2-92c3-47c8-9271-a6cd08363174"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Customer-Address-Response"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Address not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error_code": {
+                                            "type": "string",
+                                            "default": "CUSTOMER_ADDRESS_NOT_FOUND"
+                                        },
+                                        "error_description": {
+                                            "type": "string",
+                                            "default": "Customer Address not found"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "default": "Falha ao processar sua requisição"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "addresses"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Address Id",
+                        "required": true
+                    }
+                ],
+                "summary": "Delete a specific address",
+                "description": "Delete a address by id",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "string",
+                                            "default": "Deleted"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Adddress not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error_code": {
+                                            "type": "string",
+                                            "default": "CUSTOMER_ADDRESS_NOT_FOUND"
+                                        },
+                                        "error_description": {
+                                            "type": "string",
+                                            "default": "Customer Address not found"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "default": "Falha ao processar sua requisição"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/upload": {
+            "post": {
+                "tags": [
+                    "measures"
+                ],
+                "summary": "Create measure",
+                "description": "Create a new measures and return the value of the measure",
+                "produces": [
+                    "application/json"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Measure"
+                            },
+                            "examples": {
+                                "upload": {
+                                    "value": {
+                                        "image": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMSEhUTExMWFhUXFxgWGBgXGRgVFhUWGBcXGBUVHhUYHiggGB0lGxUXITEhJSktLi4uFx8zODMtNygtLisBCgoKDg0OGxAQGy0lICUtLi0tLSstLS0tLS0tLS0uLS0tLS0tLS0tLS0vLS0tLS0tLS0tLS0tLS0tLy0tLS0tL//AABEIAK8BIQMBIgACEQEDEQH/xAAcAAEAAQUBAQAAAAAAAAAAAAAABQIDBAYHAQj/xABEEAABAwEFBAYIAwYGAQUAAAABAAIRAwQFEiExBkFRYSJxgZGhsQcTIzJCwdHwFGJyM1KSosLhJENTc9LxYxUlgrLD/8QAGQEBAAMBAQAAAAAAAAAAAAAAAAEDBAIF/8QALhEAAgECBQIEBQUBAAAAAAAAAAECAxEEEiExUUFxEyIy8BRhgcHRM0JSkbFE/9oADAMBAAIRAxEAPwDuKIiAIiIAiIgCIiAIiIAiIgCIvHOAEnIBAeotUvn0gWOhIa41n8KcEfx6d0rUrf6SLXU/Y0mUm8XdM/xOhvgr4YepLoVyqwjuzrCLiT7zvO0aV6xn/TDmjvpgNVqpcFvcJe6qRxc4f1OVnwyXqkjjx10TO5IuE0Nn7ZPs3un8r2g+Dlltde1DSpXgc3VB3GQnwy6TQ8flM7Wi5DY/SLbqJitTbVA1kYHd7ch/Cttub0jWStAqE0HfnzZ/GNOtwCrnhqkel+x3GrGXU3FFTSqBwDmkEHMEGQRxBGqqVBYEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAERaDt3t16kmzWUh1bR79RS4gcXeXl3Tpym7I5lJRV2Te1W2NCwjC446sZU2nPkXH4R48ly69r9tdvdhe5wafdo0wYjjh3/qcVVs/s5VtLy8kknN1V3SznOJ1dr0jp169Iua4aVnbFNuZ1cc3OPEnetV6dDRayM/nq/JGm3NsO4w6qfVjgIc89bjkOwHrW3Xfs5QpwW0gT+8/pO7zmp2nQAV0BZ51pz3ZdClGOyMRtl59wVmtdTHghxeQdc1JIq7lhC2bZ2jTMtDwdPeV83Zwe8deak17CXZFiBtd1Fwh7adUcCBK1e9NjqD5w4qL+Bzb3nPx7F0aFbqUA4QRPWu4VZR2ZzKEZbnIqJt91ulhJpz7ubqTuzce4roeym2tC2Qw+zrfuOPvccLvi6tfNZle7siAA5p1Y7MELSdoNig6atnlrxnh3gje0/fLgtGeFXSej5/JVaVPbVHUkXPdi9t3FwsttMVPdZUOQfuDXfm4Hfoc9ehLNUpyg7MujJSV0ERFwdBERAEREAREQBERAEREAREQBERAEREAREQBEUPtXfrbFZ3VTBd7tNv7zzoOreeQKlJt2Qbsa/wCkPa02cfhqB9u8dJw/ymn+o7uAz4LUdktlzXdid7nxH947xPDifsY+z911LVWxvJc+ocb3bwDqeU6BdcsFjbTYGNEAADLkts5KjHJHfqZYrxZXeyKLJY2saGsADRlw0WS1sKteFYTUeKMvlxOBg1c7TTT/ALUkqSwTMCRod4QEBamlpa2A3VxGIwRoOlOWhVNV2YgSA0vcA8xrE4u5Tz6LXZloPWAUbQaNGgZRoNOHUosTcgnOdDBJcA0vIDiOid08oVdFx9mx9QhrpfM6Dc3Eeo96mWUGjRoGUZAacEdZGEAFogaCNEsLmBYmVHNBDjAJjOMstfFTCoY0AQBAG4KpSQVK3Vs4OYyduKrCrCA0ra/ZVtpa57WxVGZA+LmPv5Kj0e7VOcfwdpPtW/s3n/MaPhJOrgN+8DiM94LZz3rnvpE2dOVqo9FzSHS3IhwMh09cdsc1qpTVReHL6MzzXhvOtuv5OkIte2I2iFts4cYFVnRqt0h25wHBwz65G5bCs8ouLsy9O6uERFySEREAREQBERAEREAWJabWGuw8llrU77tRFZwHDLsxKqtNwV0d045mTgvAZdXyVqveRjLXF4DctV/GSAZyz78KyqFYkun4Tn2/9LMq8noXOkkbjQqhzQ4b/sq4ovZ+tipkTmCe4/3lSi2xd1cztWYREUkBce2xvP8AG24sBmjZ5aODnSMZ7XQ3qC6Ptje34WyVaoPSw4Wfrdk3u17FzHYu7MRYDq843dQ93+o9y14ZJJ1H0M+Ik7KK3Z0DY66vVUw8jpOz79O4LYSlJmEADcEKzSk5O7LoxUVZFKg696vFYsDZpte2k58iRUqCWAMjMQ5gJn4hkc1OKCtV2VDXcQW+qdVp1n64w+kAGtAiIOBhmdxyzUI6KLTedZsNaxrnn1rsJOACnSw4s4Mul7QOtV171c1pqASz1bHtGheahhgnQSS0K3abDUfD6Tmte31rJqBxBZVwy6BnILGkdRCqtF3S00WH3adMMLgYDqTpZPES1swurArpXhVcAC1rXtq+qqCcQacIeIdAkEOadBrordC+HvxQzDLH1KRJBFRtNwa4kD3c3NIE6OHUvaNmewh1SPWVK5qODJLG+zDAA4gEw1jc4GcrHpXc+mHGphLKVGrSp4CS57ajmulwIhpAptEAmczyUWBlVrxrNwOwN9WTTa52KCXVH4AGtgzBIJkjXKVXVvKpTZUe9slhIAYJ0kyToBA1/wCliVA/8RQJdTLQ0YKbsYLXEkPqZAtLiMm4tM41KyoDqNdoOHEXNGIxmZGqh7M7hbMrl+2W19NzpALQwvy1OEEkaqllveWlwDZa/A6Dib8JkOGo6Q7ZVu82h73tBgmmQScmjXeNxzBVulTDacgMAfUDmspnFTaIaCAYGuEnIDMp+5HSUcjfUzqltLamDE2TECDMwSRi0mM411V613jTpGHl0kA5Nc7InCJLQYkkDtUNaATafi/atOGDgLRSj1uKNd2sZAROam7TYmvdJmeiMvyPDx4hcpkVIqNuxTZrya94a3MFrjOYcC12EtLCJbnOu8FZdooh7S1wkOBEfJW7LQDAQN7nOz4vcXnslxWQFJWzkVCu66rykz6p5wVOGBxyf1jI9jhvXYAVoHpUurHSbVAzGR8x8x/8lMeji9/xFiZJl9L2buPR9w/wwtVbzwVT6Moo+VuHH+G0IiLKXhYt42wUmYjnmABxJWUtb2vtEBjZ4uI8B81zN2VyYq7M7/1OcxoRI8/JetvOTHELVLNbCWkaYQO6T8iFVTtBlnHzEGfCFhdeSZpVJG5WK148jz7wsxats/aSXTuxj+YEHxhbStVGbnG7KakcrCIiuKwtYt9AG2H/AGXHt+ytnWvW0f4tx/8AC4d8H5LPifSu5bS3ZA2Wzewo/wC7nzBeGx4q+94abVxNRkcIAP1VVMxSs4/8v/6A/JR961SC/mc1ji9ffBoexlWau5rQ4Eg8QYS0XraPhrO8D8lFWa3D1cFUfixxVickcWReq7TWxp/aT2N8oRm1tpP+Z4N+ixK1Zjsio+tQ3tIPI/VdZnyMqL3pDt1Z9GzMqVcXrj6wNgDCM2iSNdeyFsvo+sskvjICB5eBae9c2veo51os7HT0WkxMxJd9Ae1de2HpxQn70B85Xqx0oL5nnT1r24T/AAbIrVd8NJ4DforrlbqmAddDoJPYN6oLzGpWmcOkknuGLPfw4lZCw2VHy2Z0J939WuQzEN4TKUqzzh1z4tg6nXLIgR/dQSZaIikgSqKlYNEuIA4kx5rEvi8m2emXu7PmVzRl8G0Vnvcx0xDSXdIMnPIdEZxoEB1OlbabjDajSeAcCe5XWTnJnPLkIGXfPeuHWKlXfaGy4u9W+SXZhucbt5XQrs2oIxUyC5zDHSPSA3Z5yIQmxuK9BUddd5irIw4SM9ZkLOLxlzMIQYZu32nrPWVJmcM9COGHTnOvNZ8q3TcTMiM4VaEttlTVWFbCuBCCO2ksvrLNVb+UkdYzHiFyvYa8n2etXptMTDo5Ax/U3uXZKrZBHJcKzp28tGpD256aEjxYFdFZqM0VbVovk36rtJWHxkdg+ixTtPaHGGPJ5wI74UMLMTnUdPI5DuWQKgaMvvkvKUnyeg0uCUN/VwOlWcT2AeSiLVeRfLnOJPEmSsa1VCQVEGueku9WjnRG5XU3G2p+ZhHc1x+SlLLTbFlcdYLfAFRWymYbzcR3tj5qZoD2VnPB58Qfos01Zv3wWp6e/mZ9w0A31o4PcR2OlbEoK6T7WuOZ8YPzU6tuG9P1Zmq+oIiLQVBazeVaLXHGmfJbMtUvpv8Ai2Hi1w/lWbE+ld/sy6ju+xEstPsqRO6qfNRt+WiXPHA69YWebOBSPBtUn771G39Z8OM847pWODV/fBpktCExmBw5LJAJGfksSjTJwrYLNQy7FobsVJEQ9hyGaqZZyd8HqKmxSnT7z8UaOK5bJSNEt4/xzQdzB/8AYldn2RH+HHb5lcdvwReDfzMHmfout7D1cVmHV55/Nes/0Ynm/wDRLt9zYnKzaAS0xy3xOeYnnorzlYtLQWwTGY8xwVBeYpe7CWAgPwyBMkZ558shKrq4ySWndAzBEzw4696pgAObJ0ecRBIEkzmdY+SteoblDvjnMEGejqI5ctR2wSX3sfGTs8vCPMSshWLI0CYIOe7jxPMq8pBqm3loosaz1/uOGGILhJJOcfo8FzK86tJjg6zug8iTkdfe03Lq+21x/iqENMPbm2dPvXvK5ze130bPSw+9UiAd5O93GApRBEXTaqwfhpkYnGZPHis3ZgVBVxRLSSxxn4oxb9dFTSsTRQbWpEh7QHEgnjDu7PuU3sZddd8ktOCcY6IBJdli7hkFD2JRvuzgGf7x8t4U05mh0gz8j4EqKuWxuYS5wIygTz+/FZF6y7DSgkPkvAMH1YgETI3ubPKVCBWbSXmaRbkY6cjIwcbR8YiYzAMFW7PXquL4dSdhdhjC5kjKTiLnaHEND7q1q2XgXltoa04WPALSd/Qe1w4SMM9W+VmXXfFCv6ykGuaagI6RxDOSQO1zjHNc51ezL/h5uGeOqNjslsDyRmHNJBB5GCQdHCcpHUYOSzAoWtacRdhYS6jBBaRmSOk0iQNBpmekDrCmWOkAjQ5hdlBU/Q9RXDL3P/uI/wB2oPFw+a7jVOR6lwm0vx3iyN73O/iLj8lfS9MuxRU/UgbWbIVV+CMSfuVmOH32lUP5LxUz0iJtbAGnq+i1iq7M5HuK2u2b8vv7KiKtn6DirYM4kic2brhvqhvLz5sH1UjZby9hRJ3VgD3PCi7qs4iid+J3cMCt0W+xp561xH84VNW1/fBbTWhudyWzFaa46j/KCtoWkbOt/wAVX/QO/AFu614b0vuZ6y1QREWkpC1baCmfxFNw3fWPotpWuX+YqNPP6ELPiV5PqW0X5jXqtJ/q6jZzL5HVkFjX5TOZOhAPaRKl63xD83kZ+awb4GQEatHgIIWGKaNTZCWSh7qnLOxSFxbL46baj3FsiWgaxuJJ48Fl2jZ57M2EPHDR30K0eFK1yrPHYi/UDPuVupZ4WU5paYcCDwIhe7lWzo51ttR9XabPUjWWnv8A7ldB9Hlp6JZw/wCh4ALWPSRYMVmDxrTcHdhyPmSmwN6RUYdzwO/Q+IHevYovPhux5tZZcQnyrfc6yVZtPuukE5HTXxV0GfNW656JyndGkzuVJcYzntjCQ4dDloco1zKMsrDBAiCSBlkZEjvaqX1QTOGRhknPQgnqnKOOa9pWjJogCTBzkjnz6+agkvUqWGc5kydOEbupVoV5Kkg9UFe+ydmtBxOZDuIy8vkpW3VC2m9wMEMcQeBAMKGp3hVLWHG3E+oxrW8gS15OWhOHvQktXdsZRojCHOLZJjr1EklbFZ6DWDC0QPvvUNabXVpFrX1B7ji4iP3+jhkZkNyg5KXsVUuY1xIJO9uY8UBeWBbgRVpOiZx09Yguwunnkx3bCz1atdnbUYWOGR7xwI5g5oDXbfYi6kKT3+0eXFoIaDrocAA0cATxKjLo2eqUqnrapaxlPpE4hoM+xbFVpEPa6u0uwHoPptlsHDJcBJaZbJ3ZDPUKzSbRIrNdie2pUktY15OZnFkSdSM8h0dFxKCk7s0U8TOEHBbMyHPez17iwlpADYwtcScQycCCfg3zmeoTNnZha1vAAdwhYFls73FrqggMJwNnPkXwSCQN0nMTrAEkF2Z2YN+Wv1VCrUPwtJ7QCY71xW5RjvAH/TYT3CP6l0f0kXiGUW0pzeZP6W9J39I7VoGwFIudWrH4jhHiT5hWyeTDyfJTFZq6+RuZP081beJVxrFUyg52QBM7hme5eMrs9IwK9Ke1YlehFNy2+x7NPdm8hg4anuGQWHtBcbqLMQOJpIBygt4TyVqpySvY4zxehHXXZz0ODQ7vIH/FWaNgPqqTeFTF5/VSl3sgDLc7yy81kilMdfmR9CqJ3dy2LsXdnLORaazj8X9h8ltygbjp+0efvMkqeW7DLymWs/MERFoKgsW22FtWJ3FZSKGk9yU7EY+52kOHEgj8sefBe1LmpuIxAEYYI0k8ZCkkUZI8E5meAQvURdHJbrUWvEOaCOai7TcTTmx2E8DmO/XzUwi5lFS3JUmtjSr5ul5pvpvb0XNInUZ+XauUXHVdQqOpO96m4ns+LwzX0YuRelq4TQrMt1JsNcQ2oAMg7ceojJX4RKEnF7MqxKc43W6Nzu2/MVJjon97q3qdqu6MjMdE6TLZEmOqVy3ZC9mghrvcdEdWkdmnVC6jZsOEBum7lyUVIZHZilUzxuWHVH7gdCfd/VHb7uXNUhxluWUmDhgkZT+nf1ws4qkqstKCqVUVShBjXkfY1P0O8ioazVPXVWtkFoDCJn3WNaHtHIuJ7QFMW1zXMe3EBILZIJiQRMbxke4qNfZDAHrKIDMj7N2Yk4mnpZgkGeo8FDJR7aCxzqRpyGl4YHCIObnEgazM68CpmzE4RMz+aJ134clAU7sLA6KtIEQS4tdiZwIOLJTFme2mwMJaC0QQ3ICTlAPWO9EGZcr1WfxDM+kMhOu7LPxHeFcY4EAgyDmDxCkgjn3a7GXipq4Ow5wIOgz3xn+t/EAUuuyoST605lxjpfFu17OoCIKlV6EJLNhs5YM3F2TdSTmGgGJOUxKrtTjGW7PhMaDvVbnQtL232gNGkaTTFSoDnPut+J3LgP7LqMXJ2RxKSirs0bb2+/XVXwZH7NpG8D33drp7IW37H7PvZZ6bQwyRicdBidmRJ4aLVvR3cBt1rFV7fYUCHGdHOGdNnPMYjyHNdzXeKSlaHRHOHvG8nuyEs1wDWo7sbkO85nwUtQs7GCGtA6vrvV1FRGCjsWuTe4VFWmHAtcJBEEHeFWi6IMFl1UwWwMmiIOc9fFesu1gAHB2Kd/Us1FzkjwTmZao2drZgRKuoi6SsQEREAREQBERAEREAREQBYt52BlopPo1BLHgtI+fWNVlIgPn633fUu60us9UnDOKm/cRud8iF0bZO/QWhjjpAM6g7s94O49intr9madvomm7ovGdN+9jvod4XG6b61irGhXGB7Mg45tc3+ph8FtjavGz9SMc1KlLPHZ7r7ndWvn68UK0m4NqmmGPyy35x27xwK26laQ4SDI8f7rJKLi7M1RkpK6LxWNXtQacIBc7WG7hxPBZErBc/1dRxcDhdHSAmIEQYXLOim1ta33nOJcTAEFxyIIGWkEo+ysILnEtxRqQMMk5cpLj3ry8KRD2vlwEFpLdRz6ldtdIVacDR2E8MsQJOfIKCTx9NgDwXACIMkDCHTx4njwStSa5x6fSIBABEwCDI3kSNeZWM2jUbifhBqPwSQWnCRjBIxEAkNIHarlKzEFoDYaMJBJBLQ1hbh11nhlmUBWKbB8ZjCaY5AASMQH5fErLp12mADuyyIyGX2FTUs7XazvOp3pTs7QQROU7+Jk5IC+CvSVbdUA5/fFQV/bTUrOMzieRk0ankOClJvRENpK7MnaG+2WamXOPS0a0ak7gOa5HWp17faRSZ0qtQ9I/Cxo1z3NaNfqsi222vbK4YwF9Z5wta3MUxvg+bty6tsXsoywUtzqz/ANo/+hvBo8deQ12VGN36mZk3VlfoiQ2cuWnY7OyhT0bm5x1e8+889fgIG5SaIsrdzSERFACIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgChNqdmKNvp4Kohw9yoPeYfmOSm0UptO6B8/3zdNpu54ZWaTTn2dVuh6nbj+UqUuba19LV2Jvl1jVp8F2a12VlVhZUY17HCC1wkHsK5ptF6LIJqWGphOvqnnLqbU+Tu9alVhUVqm/JmdJweaH9E5de09KqAQ6D1/PQqcp2sH+2XguE3hZrRZXYa9J9J24+6HdRHRf2FZd37TV6ejw4cCcJ8eiuZYeW8dTpVv5Kx3AVhx71VjHEd65fQ2+cB0qbu6R3g/JZjPSDT3tPj/xVLpyW6LFUi9mdExDl3hUmoOI81oB9IFL90/fYsatt8T7lMnv/ALJklwHUiup0Z1cfeQUfeF806Ql7wBw/tqVzK37ZV3iA4M6jJ8MwoizsrWl+GkypWfvymOZAyA5uKtjhpvV6Fbrr9uptt97cOeC2gMLd7zl3fZ7Fr10XbabdVLKILs+nVdOFs7yd3UMytt2f9GL3EPtr4H+kw59TnjJvU3vXSbDYqdFgp0mNYwaNaIHXzPNducKWkNXyR4cp6z/oidk9laNhZDOlUcOnUI6TuQHwt5d8lTyIsspOTuy9KwREUEhERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQFuvRa9pa9oc06hwBB7CtWvL0c3fWkikaRO+k4s/kzb4LbUXUZOOzIaT3OY2n0RN/yrW5v62B3i0t8lg1PRTah7tqpnrD2/VdcRWrE1F1OHSg+hyNnortR9600x1Yz9FnWf0SA/tbW53JrI8XOPkunIpeJqckKjBdDULt9G9gpQTTdVI31HSP4Ww09oW02WyspNDKbGsaNGtAaB2BXkVMpyluyxRS2CIi5JCIiAIiIAiIgCIiAIiIAiIgCIiA//2Q==",
+                                        "customer_code": "217701b8-b940-4a9f-bf57-c143e4a70f62",
+                                        "measure_datetime": "2024-09-01 00:00:01",
+                                        "measure_type": "WATER"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Measure-Response-Upload"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error_code": {
+                                            "type": "string",
+                                            "default": "INVALID_DATA"
+                                        },
+                                        "error_description": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Código de Cliente invalido",
+                                                "Tipo de leitura invalida",
+                                                "Data invalida",
+                                                "Imagem invalida"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Double Report",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error_code": {
+                                            "type": "string",
+                                            "default": "DOUBLE_REPORT"
+                                        },
+                                        "error_description": {
+                                            "type": "string",
+                                            "default": "Leitura do mês já realizada"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "default": "Falha ao processar sua requisição"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "INVALID_DATA",
+                                            "default": "Upload de imagem não foi feito"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/confirm": {
+            "patch": {
+                "tags": [
+                    "measures"
+                ],
+                "summary": "Confirm a value from a measure",
+                "description": "Corfirm a value from a measure",
+                "produces": [
+                    "application/json"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Measure-Response-Confirm"
+                            },
+                            "examples": {
+                                "confirm": {
+                                    "measure_uuid":"27a17b78-2f04-4e7e-9c18-d10ebc858d8a",
+                                    "confirmed_value": 111
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "default": true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid confirm data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error_code": {
+                                            "type": "string",
+                                            "default": "INVALID_DATA"
+                                        },
+                                        "error_description": {
+                                            "type": "string",
+                                            "default": "Dados invalido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Measure not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error_code": {
+                                            "type": "string",
+                                            "default": "MEASURE_NOT_FOUND"
+                                        },
+                                        "error_description": {
+                                            "type": "string",
+                                            "default": "Measure not found"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Confirmation duplicate",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error_code": {
+                                            "type": "string",
+                                            "default": "CONFIRMATION_DUPLICATE"
+                                        },
+                                        "error_description": {
+                                            "type": "string",
+                                            "default": "Leitura do mês já realizada"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "default": "Falha ao processar sua requisição"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/{id}/list": {
+            "get": {
+                "tags": [
+                    "measures"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Customer Id",
+                        "required": true
+                    }
+                ],
+                "summary": "Get a all measures from a specific customer",
+                "description": "Return all measures from a specific customer",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "customer_code": {
+                                            "type": "string"
+                                        },
+                                        "measures": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Measure-Response"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid measure id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error_code": {
+                                            "type": "string",
+                                            "default": "INVALID_ID"
+                                        },
+                                        "error_description": {
+                                            "type": "string",
+                                            "default": "Id invalido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Measure not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error_code": {
+                                            "type": "string",
+                                            "default": "MEASURE_NOT_FOUND"
+                                        },
+                                        "error_description": {
+                                            "type": "string",
+                                            "default": "Measure not found"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "default": "Falha ao processar sua requisição"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/measures": {
+            "get": {
+                "tags": [
+                    "measures"
+                ],
+                "summary": "List all measures",
+                "description": "Return a array of meaures",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Measure-Response"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "500": {
+                    "description": "Internal Server Error",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "default": "Falha ao processar sua requisição"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/measures/{id}": {
+            "get": {
+                "tags": [
+                    "measures"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Measure Id",
+                        "required": true
+                    }
+                ],
+                "summary": "Get a specific measure by id",
+                "description": "Return a measure by id",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Measure-Response"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid measure id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error_code": {
+                                            "type": "string",
+                                            "default": "INVALID_ID"
+                                        },
+                                        "error_description": {
+                                            "type": "string",
+                                            "default": "Id invalido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Measure not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error_code": {
+                                            "type": "string",
+                                            "default": "MEASURE_NOT_FOUND"
+                                        },
+                                        "error_description": {
+                                            "type": "string",
+                                            "default": "Measure not found"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "default": "Falha ao processar sua requisição"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "measures"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Measure Id",
+                        "required": true
+                    }
+                ],
+                "summary": "Update a specific measure",
+                "description": "Update a measure by id",
+                "produces": [
+                    "application/json"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Measure"
+                            },
+                            "examples": {
+                                "measure": {
+                                    "value": {
+                                        "image": "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",
+                                        "customer_code": "217701b8-b940-4a9f-bf57-c143e4a70f62",
+                                        "measure_datetime": "2024-09-01 00:00:01",
+                                        "measure_type": "WATER"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Measure-Response"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid measure id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error_code": {
+                                            "type": "string",
+                                            "default": "INVALID_ID"
+                                        },
+                                        "error_description": {
+                                            "type": "string",
+                                            "default": "Id invalido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Measure not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error_code": {
+                                            "type": "string",
+                                            "default": "MEASURE_NOT_FOUND"
+                                        },
+                                        "error_description": {
+                                            "type": "string",
+                                            "default": "Measure not found"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "default": "Falha ao processar sua requisição"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "measures"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Measure Id",
+                        "required": true
+                    }
+                ],
+                "summary": "Delete a specific measure",
+                "description": "Delete a measure by id",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "string",
+                                            "default": "Deleted"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid measure id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error_code": {
+                                            "type": "string",
+                                            "default": "INVALID_ID"
+                                        },
+                                        "error_description": {
+                                            "type": "string",
+                                            "default": "Id invalido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Measure not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error_code": {
+                                            "type": "string",
+                                            "default": "MEASURE_NOT_FOUND"
+                                        },
+                                        "error_description": {
+                                            "type": "string",
+                                            "default": "Measure not found"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "default": "Falha ao processar sua requisição"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Customer": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "profile_picture": {
+                        "type": "string",
+                        "format": "base64"
+                    },
+                    "address": {
+                        "type": "string"
+                    },
+                    "city": {
+                        "type": "string"
+                    },
+                    "district": {
+                        "type": "string"
+                    },
+                    "country": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "postal_code": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Customer-Response": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "code": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "email": {
+                                "type": "string"
+                            },
+                            "password": {
+                                "type": "string"
+                            },
+                            "profile_picture": {
+                                "type": "string"
+                            },
+                            "customer_code": {
+                                "type": "string"
+                            },
+                            "is_active": {
+                                "type": "integer"
+                            },
+                            "updatedAt": {
+                                "type": "string",
+                                "format": "datetime"
+                            },
+                            "createdAt": {
+                                "type": "string",
+                                "format": "datetime"
+                            },
+                            "access_token": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "address": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "address": {
+                                "type": "string"
+                            },
+                            "city": {
+                                "type": "string"
+                            },
+                            "district": {
+                                "type": "string"
+                            },
+                            "country": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string"
+                            },
+                            "postal_code": {
+                                "type": "string"
+                            },
+                            "phone": {
+                                "type": "string"
+                            },
+                            "customer_code": {
+                                "type": "string"
+                            },
+                            "updatedAt": {
+                                "type": "string",
+                                "format": "datetime"
+                            },
+                            "createdAt": {
+                                "type": "string",
+                                "format": "datetime"
+                            }
+                        }
+                    }
+                }
+            },
+            "Customer-Response-List": {
+                "type": "object",
+                "properties": {
+                    "customer_code": {
+                        "type": "string",
+                        "format": "base64"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "profile_picture": {
+                        "type": "string"
+                    },
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "is_active": {
+                        "type": "integer"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "datetime"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "datetime"
+                    }
+                }
+            },
+            "Customer-Address": {
+                "type": "object",
+                "properties": {
+                    "address": {
+                        "type": "string"
+                    },
+                    "city": {
+                        "type": "string"
+                    },
+                    "district": {
+                        "type": "string"
+                    },
+                    "country": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "postal_code": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "customer_code": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Customer-Address-Response": {
+                "type": "object",
+                "properties": {
+                    "costumer_address_id": {
+                        "type": "integer"
+                    },
+                    "address": {
+                        "type": "string"
+                    },
+                    "city": {
+                        "type": "string"
+                    },
+                    "district": {
+                        "type": "string"
+                    },
+                    "country": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "postal_code": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "customer_code": {
+                        "type": "string"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "datetime"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "datetime"
+                    }
+                }
+            },
+            "Measure": {
+                "type": "object",
+                "properties": {
+                    "image": {
+                        "type": "string",
+                        "format": "base64"
+                    },
+                    "customer_code": {
+                        "type": "string"
+                    },
+                    "measure_datetime": {
+                        "type": "string",
+                        "format": "datetime"
+                    },
+                    "measure_type": {
+                        "type": "string",
+                        "description": "Measure Type",
+                        "enum": [
+                            "GAS",
+                            "WATER"
+                        ]
+                    }
+                }
+            },
+            "Measure-Response": {
+                "type": "object",
+                "properties": {
+                    "measure_uuid": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "measure_datetime": {
+                        "type": "string",
+                        "format": "datetime"
+                    },
+                    "measure_value": {
+                        "type": "integer"
+                    },
+                    "measure_type": {
+                        "type": "string",
+                        "description": "Measure Type",
+                        "enum": [
+                            "GAS",
+                            "WATER"
+                        ]
+                    },
+                    "has_confirmed": {
+                        "type": "boolean"
+                    },
+                    "image_url": {
+                        "type": "string"
+                    },
+                    "customer_code": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "datetime"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "datetime"
+                    }
+                }
+            },
+            "Measure-Response-Upload": {
+                "type": "object",
+                "properties": {
+                    "image_url": {
+                        "type": "string"
+                    },
+                    "measure_value": {
+                        "type": "integer"
+                    },
+                    "measure_uuid": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Measure-Response-Confirm": {
+                "type": "object",
+                "properties": {
+                    "measure_uuid": {
+                        "type": "string",
+                        "format": "base64"
+                    },
+                    "confirmed_value": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "Customer-Authentication": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Customer-Authentication-Response": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "email": {
+                            "type": "string"
+                        },
+                        "nome": {
+                            "type": "string"
+                        },
+                        "profile_picture": {
+                            "type": "string"
+                        }
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}

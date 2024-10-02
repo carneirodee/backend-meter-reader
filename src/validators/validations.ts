@@ -2,6 +2,13 @@ import Joi, { LanguageMessages } from "joi";
 import { cpf } from 'cpf-cnpj-validator';
 import { cnpj } from 'cpf-cnpj-validator';
 
+export const validateUUID = (uuidCheck: any) => {
+    const confirmationSchema = Joi.object({
+        id: Joi.string().uuid().required(),
+    });
+
+    return confirmationSchema.validate(uuidCheck);
+}
 
 export const validateConfirmValue = (data: { measure_uuid: string, confirmed_value: number }) => {
 

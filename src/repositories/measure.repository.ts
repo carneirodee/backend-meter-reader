@@ -42,7 +42,7 @@ export default class MeasureRepository {
         return measure.save();
     }
 
-    update = async (id: number, data: Measure) => {
+    update = async (id: number, data: any) => {
         const measure = await Measure.update(
             data ,
             { where: { measure_uuid: id }, returning: true }
